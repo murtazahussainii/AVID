@@ -76,21 +76,21 @@ void loop() {
         stopMotors();
         delay(500);
         moveBackward();
-        delay(2000);
+        delay(1800);
 
         // Rotate left 90 degrees (disable left tire, move right tire)
         stopMotors();
-        delay(1500);
+        delay(3000);
         rotateLeft90();
 
         // Move forward 20 cm to clean the start of the next row
         moveForward();
-        delay(1000);
+        // delay(1000);
 
-        // Rotate another 90 degrees to complete 180-degree turn
-        stopMotors();
-        delay(1500);
-        rotateLeft90();
+        // // Rotate another 90 degrees to complete 180-degree turn
+        // stopMotors();
+        // delay(1500);
+        // rotateLeft90();
     }
 }
 
@@ -112,6 +112,6 @@ void rotateLeft90() {
     digitalWrite(motor2Pin2, LOW);
     analogWrite(MOTOR_PWM, 150);
     Serial.println("Rotating LEFT 90 degrees...");
-    delay(4000);
+    delay(8000);
     stopMotors();
 }
