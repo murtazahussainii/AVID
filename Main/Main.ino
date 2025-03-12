@@ -10,10 +10,6 @@ const int motor2Pin2 = 12; // IN2 on L298N for Motor 2
 #define ULTRA1_TRIG A0
 #define ULTRA1_ECHO A1
 
-// Ultrasonic sensor 2 (Right Front) - COMMENTED OUT
-// #define ULTRA2_TRIG 3  
-// #define ULTRA2_ECHO 2  
-
 void setup() {
     Serial.begin(9600);
 
@@ -27,10 +23,6 @@ void setup() {
     // Set ultrasonic sensor 1 (Left Front)
     pinMode(ULTRA1_TRIG, OUTPUT);
     pinMode(ULTRA1_ECHO, INPUT);
-
-    // Set ultrasonic sensor 2 (Right Front) - COMMENTED OUT
-    // pinMode(ULTRA2_TRIG, OUTPUT);
-    // pinMode(ULTRA2_ECHO, INPUT);
 
     moveForward();
 }
@@ -76,17 +68,29 @@ void loop() {
     Serial.print(leftDistance);
     Serial.println(" cm");
 
-    // **Obstacle Avoidance Logic**
-    if (leftDistance < 15) {  
-        // Obstacle detected in front
+    // Move forward until very close to the wall
+    if (leftDistance > 5) {  
+        moveForward();
+    } else {
+        // Wall detected, move backward until there is enough space
         stopMotors();
         delay(500);
         moveBackward();
-        delay(1000);
+        delay(3000);
+
+        // Rotate left 90 degrees (disable left tire, move right tire)
         stopMotors();
         delay(500);
-        rotateRight();  // Default turn direction
+        rotateLeft90();
+
+        // Move forward 20 cm to clean the start of the next row
         moveForward();
+        delay(1000);
+
+        // Rotate another 90 degrees to complete 180-degree turn
+        stopMotors();
+        delay(500);
+        rotateLeft90();
     }
 }
 
@@ -100,14 +104,14 @@ void moveBackward() {
     Serial.println("Moving backward...");
 }
 
-// Rotate in place (90 degrees) to the **right**
-void rotateRight() {
-    digitalWrite(motor1Pin1, HIGH);
+// Rotate left 90 degrees by disabling the left tire and moving the right tire
+void rotateLeft90() {
+    digitalWrite(motor1Pin1, LOW);
     digitalWrite(motor1Pin2, LOW);
-    digitalWrite(motor2Pin1, LOW);
-    digitalWrite(motor2Pin2, HIGH);
+    digitalWrite(motor2Pin1, HIGH);
+    digitalWrite(motor2Pin2, LOW);
     analogWrite(MOTOR_PWM, 150);
-    Serial.println("Rotating RIGHT...");
+    Serial.println("Rotating LEFT 90 degrees...");
     delay(700);
     stopMotors();
 }
